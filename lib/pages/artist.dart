@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:test/controllers/home.dart';
@@ -108,19 +109,27 @@ class _ArtistPageState extends State<ArtistPage> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: artist.albums
-                          .map(
-                            (e) => ArtistAlbum(
-                              album: e,
-                              onTap: (_album) {
-                                AlbumPage.open(_album.id);
-                              },
-                            ),
-                          )
-                          .toList(),
+                  ScrollConfiguration(
+                    behavior: ScrollConfiguration.of(context).copyWith(
+                      dragDevices: {
+                        PointerDeviceKind.mouse,
+                        PointerDeviceKind.touch,
+                      },
+                    ),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: artist.albums
+                            .map(
+                              (e) => ArtistAlbum(
+                                album: e,
+                                onTap: (_album) {
+                                  AlbumPage.open(_album.id);
+                                },
+                              ),
+                            )
+                            .toList(),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 20),

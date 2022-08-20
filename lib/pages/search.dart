@@ -39,6 +39,7 @@ class _SearchPageState extends State<SearchPage> {
                     decoration: const InputDecoration(
                       hintText: 'Поиск',
                     ),
+                    autofocus: true,
                     onSubmitted: (_) {
                       controller.onSearch();
                     },

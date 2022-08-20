@@ -202,18 +202,19 @@ class _PlayingPageState extends State<PlayingPage> {
                         ),
                       ],
                     ),
-                    Column(
-                      children: audioControl.tracksList
-                          .map<Widget>(
-                            (data) => TrackListTrack(
-                              track: data,
-                              onDownload: (_) =>
-                                  homeController.downloadTracks([data]),
-                              onPlay: () => homeController.playTrack(
-                                  data, audioControl.tracksList),
-                            ),
-                          )
-                          .toList(),
+                    ListView.builder(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemCount: audioControl.tracksList.length,
+                      itemBuilder: (context, index) => TrackListTrack(
+                        track: audioControl.tracksList[index],
+                        onDownload: (_) => homeController
+                            .downloadTracks([audioControl.tracksList[index]]),
+                        onPlay: () => homeController.playTrack(
+                          audioControl.tracksList[index],
+                          audioControl.tracksList,
+                        ),
+                      ),
                     ),
                   ],
                 ),

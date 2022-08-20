@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:test/controllers/home.dart';
@@ -72,41 +73,58 @@ class HomePage extends StatelessWidget {
                     ),
                     const SizedBox(height: 10),
                     Obx(
-                      () => SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: controller.generatedPlaylists.reversed
-                              .map(
-                                (playlist) => HomeGeneratedPlaylist(
-                                  playlist: playlist,
-                                  onTap: (_playlist) =>
-                                      controller.onPlaylistClick(playlist),
-                                ),
-                              )
-                              .toList(),
+                      () => ScrollConfiguration(
+                        behavior: ScrollConfiguration.of(context).copyWith(
+                          dragDevices: {
+                            PointerDeviceKind.mouse,
+                            PointerDeviceKind.touch,
+                          },
+                        ),
+                        child: SingleChildScrollView(
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: controller.generatedPlaylists.reversed
+                                .map(
+                                  (playlist) => HomeGeneratedPlaylist(
+                                    playlist: playlist,
+                                    onTap: (_playlist) =>
+                                        controller.onPlaylistClick(playlist),
+                                  ),
+                                )
+                                .toList(),
+                          ),
                         ),
                       ),
                     ),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          HomeSecondaryListItem(
-                            title: 'Мне нравится',
-                            icon: const Icon(Icons.favorite, color: Colors.red),
-                            onPressed: () {
-                              controller.onLikedClick();
-                            },
-                          ),
-                          HomeSecondaryListItem(
-                            title: 'Загруженное',
-                            icon: const Icon(Icons.download_done,
-                                color: Colors.green),
-                            onPressed: () {
-                              controller.onDownloadedClick();
-                            },
-                          ),
-                        ],
+                    ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context).copyWith(
+                        dragDevices: {
+                          PointerDeviceKind.mouse,
+                          PointerDeviceKind.touch,
+                        },
+                      ),
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: [
+                            HomeSecondaryListItem(
+                              title: 'Мне нравится',
+                              icon:
+                                  const Icon(Icons.favorite, color: Colors.red),
+                              onPressed: () {
+                                controller.onLikedClick();
+                              },
+                            ),
+                            HomeSecondaryListItem(
+                              title: 'Загруженное',
+                              icon: const Icon(Icons.download_done,
+                                  color: Colors.green),
+                              onPressed: () {
+                                controller.onDownloadedClick();
+                              },
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                     Obx(

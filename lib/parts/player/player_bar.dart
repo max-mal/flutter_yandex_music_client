@@ -29,25 +29,25 @@ class PlayerBar extends StatelessWidget {
           padding: const EdgeInsets.all(10.0),
           child: Padding(
             padding: EdgeInsets.only(bottom: _bottomPadding(context)),
-            child: GestureDetector(
-              onTap: () {
-                if (audioControl.currentTrack.value != null) {
-                  PlayingPage.open();
-                }
-              },
-              child: Obx(
-                () => Row(
-                  mainAxisAlignment: GetPlatform.isMobile
-                      ? MainAxisAlignment.center
-                      : MainAxisAlignment.start,
-                  children: [
-                    audioControl.currentTrack.value == null
-                        ? Container(
-                            width: 40,
-                            height: 40,
-                            color: Colors.black.withOpacity(0.4),
-                          )
-                        : CachedNetworkImage(
+            child: Obx(
+              () => Row(
+                mainAxisAlignment: GetPlatform.isMobile
+                    ? MainAxisAlignment.center
+                    : MainAxisAlignment.start,
+                children: [
+                  audioControl.currentTrack.value == null
+                      ? Container(
+                          width: 40,
+                          height: 40,
+                          color: Colors.black.withOpacity(0.4),
+                        )
+                      : InkWell(
+                          onTap: () {
+                            if (audioControl.currentTrack.value != null) {
+                              PlayingPage.open();
+                            }
+                          },
+                          child: CachedNetworkImage(
                             key: ValueKey(
                                 "track_cover_${audioControl.currentTrack.value!.id}"),
                             url: audioControl.currentTrack.value!.getCoverUri(),
@@ -56,87 +56,86 @@ class PlayerBar extends StatelessWidget {
                             cacheTag:
                                 "track_cover_${audioControl.currentTrack.value!.id}",
                           ),
-                    const SizedBox(width: 10),
-                    IconButton(
-                      icon: const Icon(Icons.skip_previous),
-                      onPressed: () {
-                        audioControl.prevTrack();
-                      },
-                    ),
-                    const SizedBox(width: 10),
-                    IconButton(
-                      icon: Icon(audioControl.isPlaying.value
-                          ? Icons.pause
-                          : Icons.play_arrow),
-                      onPressed: () {
-                        if (audioControl.isPlaying.value) {
-                          audioControl.pause();
-                        } else {
-                          audioControl.play();
-                        }
-                      },
-                    ),
-                    const SizedBox(width: 10),
-                    IconButton(
-                      icon: const Icon(Icons.skip_next),
-                      onPressed: () {
-                        audioControl.nextTrack();
-                      },
-                    ),
-                    const SizedBox(width: 10),
-                    GetPlatform.isMobile
-                        ? const SizedBox()
-                        : SizedBox(
-                            width: 80,
-                            child: Text(
-                                "${audioControl.position.value.inSeconds} / ${audioControl.trackDuration.value.inSeconds}"),
+                        ),
+                  const SizedBox(width: 10),
+                  IconButton(
+                    icon: const Icon(Icons.skip_previous),
+                    onPressed: () {
+                      audioControl.prevTrack();
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  IconButton(
+                    icon: Icon(audioControl.isPlaying.value
+                        ? Icons.pause
+                        : Icons.play_arrow),
+                    onPressed: () {
+                      if (audioControl.isPlaying.value) {
+                        audioControl.pause();
+                      } else {
+                        audioControl.play();
+                      }
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  IconButton(
+                    icon: const Icon(Icons.skip_next),
+                    onPressed: () {
+                      audioControl.nextTrack();
+                    },
+                  ),
+                  const SizedBox(width: 10),
+                  GetPlatform.isMobile
+                      ? const SizedBox()
+                      : SizedBox(
+                          width: 80,
+                          child: Text(
+                              "${audioControl.position.value.inSeconds} / ${audioControl.trackDuration.value.inSeconds}"),
+                        ),
+                  GetPlatform.isMobile
+                      ? const SizedBox()
+                      : Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                  audioControl.currentTrack.value?.title ?? ""),
+                              Text(audioControl
+                                      .currentTrack.value?.artistsString ??
+                                  ""),
+                            ],
                           ),
-                    GetPlatform.isMobile
-                        ? const SizedBox()
-                        : Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(audioControl.currentTrack.value?.title ??
-                                    ""),
-                                Text(audioControl
-                                        .currentTrack.value?.artistsString ??
-                                    ""),
-                              ],
-                            ),
+                        ),
+                  audioControl.currentTrack.value == null ||
+                          GetPlatform.isMobile
+                      ? const SizedBox()
+                      : IconButton(
+                          icon: Icon(
+                            audioControl.currentTrack.value!.isLikedRx()
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            color: audioControl.currentTrack.value!.isLikedRx()
+                                ? Colors.red
+                                : Colors.black,
                           ),
-                    audioControl.currentTrack.value == null ||
-                            GetPlatform.isMobile
-                        ? const SizedBox()
-                        : IconButton(
-                            icon: Icon(
-                              audioControl.currentTrack.value!.isLikedRx()
-                                  ? Icons.favorite
-                                  : Icons.favorite_border,
-                              color:
-                                  audioControl.currentTrack.value!.isLikedRx()
-                                      ? Colors.red
-                                      : Colors.black,
-                            ),
-                            onPressed: () {
-                              final homeController = Get.find<HomeController>();
-                              homeController.likeTracks(
-                                  [audioControl.currentTrack.value!],
-                                  value: !audioControl.currentTrack.value!
-                                      .isLikedRx());
-                            },
-                          ),
-                    audioControl.currentTrack.value == null
-                        ? const SizedBox()
-                        : IconButton(
-                            icon: const Icon(Icons.more_vert),
-                            onPressed: () {
-                              TrackOptionsModal.open(
-                                  audioControl.currentTrack.value!);
-                            },
-                          ),
-                  ],
-                ),
+                          onPressed: () {
+                            final homeController = Get.find<HomeController>();
+                            homeController.likeTracks(
+                                [audioControl.currentTrack.value!],
+                                value: !audioControl.currentTrack.value!
+                                    .isLikedRx());
+                          },
+                        ),
+                  audioControl.currentTrack.value == null
+                      ? const SizedBox()
+                      : IconButton(
+                          icon: const Icon(Icons.more_vert),
+                          onPressed: () {
+                            TrackOptionsModal.open(
+                                audioControl.currentTrack.value!);
+                          },
+                        ),
+                ],
               ),
             ),
           ),
