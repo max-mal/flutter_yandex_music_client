@@ -13,23 +13,28 @@ class DownloaderService extends GetxService {
   RxList<Track> tracksQueue = RxList<Track>();
   bool jobRunning = false;
 
-  final hive = Get.find<HiveService>();
+  late final HiveService hive;
+  late Directory appDocDir;
+  late String downloadsDir;
+
+  Map<String, bool> cachedPaths = {};
 
   Future<DownloaderService> init() async {
+    hive = Get.find<HiveService>();
+    appDocDir = await getApplicationDocumentsDirectory();
+    downloadsDir = appDocDir.path + "/cache";
+    if (!await Directory(downloadsDir).exists()) {
+      await Directory(downloadsDir).create(recursive: true);
+    }
     return this;
   }
 
   Future<String> cacheImage(String url, String? cacheTag) async {
     String hash = cacheTag ?? md5.convert(utf8.encode(url)).toString();
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    final downloadsDir = appDocDir.path + "/cache";
-    if (!await Directory(downloadsDir).exists()) {
-      await Directory(downloadsDir).create(recursive: true);
-    }
 
     final localPath = "$downloadsDir/$hash";
     final localFile = File(localPath);
-    if (await localFile.exists()) {
+    if (cachedPaths[localPath] != null || await localFile.exists()) {
       return localPath;
     }
 
@@ -38,6 +43,7 @@ class DownloaderService extends GetxService {
       throw "http statis code is %${response.statusCode}";
     }
     await localFile.writeAsBytes(response.bodyBytes);
+    cachedPaths[localPath] = true;
     if (kDebugMode) {
       print("CACHED: $localPath");
     }

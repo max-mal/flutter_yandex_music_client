@@ -89,37 +89,37 @@ class _AlbumPageState extends State<AlbumPage> {
       body: Column(
         children: [
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Container(
                     padding: const EdgeInsets.only(bottom: 30),
+                    margin: const EdgeInsets.only(bottom: 20),
                     color: Colors.blue,
                     child: Center(
                       child: CachedNetworkImage(
                         url: album.getCoverUri(),
                         width: 200,
                         height: 200,
-                        cacheTag: 'album_${album.id}',
+                        cacheTag: album.getCacheTag(),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) => TrackListTrack(
+                ),
+                SliverFixedExtentList(
+                  itemExtent: 100.0,
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) => TrackListTrack(
                       track: album.tracks[index],
                       onDownload: (_) =>
                           homeController.downloadTracks([album.tracks[index]]),
                       onPlay: () => homeController.playTrack(
                           album.tracks[index], album.tracks),
                     ),
-                    itemCount: album.tracks.length,
+                    childCount: album.tracks.length,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           PlayerBar(),

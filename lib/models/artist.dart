@@ -34,4 +34,8 @@ class Artist extends HiveObject {
   getCoverUri({int width = 200, int height = 200}) {
     return "https://${coverUri.replaceAll('%%', "${width}x$height")}";
   }
+
+  getCacheTag() {
+    return "artist_$id";
+  }
 }

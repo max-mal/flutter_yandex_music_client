@@ -46,6 +46,10 @@ class Album {
     return "https://${coverUri.replaceAll('%%', "${width}x$height")}";
   }
 
+  getCacheTag() {
+    return 'album_$id';
+  }
+
   persist() async {
     final hive = Get.find<HiveService>();
     await hive.albumsBox.put(id, this);

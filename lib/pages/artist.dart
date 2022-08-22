@@ -92,12 +92,12 @@ class _ArtistPageState extends State<ArtistPage> {
       body: Column(
         children: [
           Expanded(
-            child: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Container(
                     padding: const EdgeInsets.only(bottom: 30),
+                    margin: const EdgeInsets.only(bottom: 20),
                     color: Colors.blue,
                     child: Center(
                       child: CachedNetworkImage(
@@ -108,45 +108,44 @@ class _ArtistPageState extends State<ArtistPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  ScrollConfiguration(
-                    behavior: ScrollConfiguration.of(context).copyWith(
-                      dragDevices: {
-                        PointerDeviceKind.mouse,
-                        PointerDeviceKind.touch,
-                      },
-                    ),
-                    child: SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: artist.albums
-                            .map(
-                              (e) => ArtistAlbum(
-                                album: e,
-                                onTap: (_album) {
-                                  AlbumPage.open(_album.id);
-                                },
-                              ),
-                            )
-                            .toList(),
+                ),
+                SliverToBoxAdapter(
+                  child: SizedBox(
+                    height: 166,
+                    child: ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context).copyWith(
+                        dragDevices: {
+                          PointerDeviceKind.mouse,
+                          PointerDeviceKind.touch,
+                        },
+                      ),
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) => ArtistAlbum(
+                          album: artist.albums[index],
+                          onTap: (_album) {
+                            AlbumPage.open(_album.id);
+                          },
+                        ),
+                        itemCount: artist.albums.length,
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) => TrackListTrack(
+                ),
+                SliverFixedExtentList(
+                  itemExtent: 100.0,
+                  delegate: SliverChildBuilderDelegate(
+                    (BuildContext context, int index) => TrackListTrack(
                       track: artist.tracks[index],
                       onDownload: (_) =>
                           homeController.downloadTracks([artist.tracks[index]]),
                       onPlay: () => homeController.playTrack(
                           artist.tracks[index], artist.tracks),
                     ),
-                    itemCount: artist.tracks.length,
+                    childCount: artist.tracks.length,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
           PlayerBar(),

@@ -35,6 +35,7 @@ class TrackListTrack extends StatelessWidget {
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(track.title),
                 Text("${track.artistsString} - ${track.albumsString}"),
@@ -57,35 +58,6 @@ class TrackListTrack extends StatelessWidget {
                           .likeTracks([track], value: !track.isLikedRx());
                     },
                   ),
-                ),
-          GetPlatform.isMobile
-              ? const SizedBox()
-              : Obx(
-                  () => track.isDownloadEnqueuedRx()
-                      ? const Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: SizedBox(
-                            child: Center(child: CircularProgressIndicator()),
-                            width: 20,
-                            height: 20,
-                          ),
-                        )
-                      : IconButton(
-                          onPressed: () {
-                            if (track.isDownloadedRx()) {
-                              return;
-                            }
-                            onDownload(track);
-                          },
-                          icon: Icon(
-                            track.isDownloadedRx()
-                                ? Icons.download_done
-                                : Icons.download,
-                            color: track.isDownloadedRx()
-                                ? Colors.green
-                                : Colors.black,
-                          ),
-                        ),
                 ),
           IconButton(
             icon: const Icon(

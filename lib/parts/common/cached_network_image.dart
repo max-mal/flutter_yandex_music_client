@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:test/services/downloader.dart';
+import 'package:test/utils/services.dart';
 
 class CachedNetworkImage extends StatefulWidget {
   final String url;
@@ -38,7 +39,7 @@ class _CachedNetworkImageState extends State<CachedNetworkImage> {
               child: Icon(Icons.error),
             )
           : (localPath == null
-              ? const SizedBox()
+              ? null
               : Image.file(
                   File(localPath!),
                   width: widget.width,
@@ -68,6 +69,7 @@ class _CachedNetworkImageState extends State<CachedNetworkImage> {
         print(_e);
       }
     });
+
     super.initState();
   }
 }
