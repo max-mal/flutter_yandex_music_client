@@ -2,6 +2,7 @@ import 'package:get/get.dart';
 import 'package:test/models/user.dart';
 import 'package:test/repos/user.dart';
 import 'package:test/services/api.dart';
+import 'package:test/services/downloader.dart';
 import 'package:test/services/hive.dart';
 import 'package:test/services/oauth.dart';
 import 'package:test/services/prefs.dart';
@@ -11,6 +12,7 @@ class LoginUseCase {
   final api = Get.find<ApiService>();
   final prefs = Get.find<PrefsService>();
   final hive = Get.find<HiveService>();
+  final downloader = Get.find<DownloaderService>();
 
   loadAccessToken() {
     api.token = prefs.getAccessToken();
@@ -35,5 +37,7 @@ class LoginUseCase {
     await prefs.deleteAccessToken();
     api.cleanToken();
     await hive.cleanUp();
+    await downloader.clearImagesCache();
+    // await downloader.clearTracksCache();
   }
 }

@@ -7,6 +7,7 @@ import 'package:test/models/artist.dart';
 import 'package:test/models/playlist.dart';
 import 'package:test/models/track.dart';
 import 'package:test/models/user.dart';
+import 'package:test/utils/path.dart';
 
 class HiveService extends GetxService {
   late Box<User> userBox;
@@ -20,7 +21,10 @@ class HiveService extends GetxService {
   RxList<Track> rxDownloadedTracks = RxList<Track>();
 
   Future<HiveService> init() async {
-    await Hive.initFlutter();
+    final appDocDir = await PathUtil.getApplicationDirectory();
+    print('Will init in ${appDocDir.path}');
+    await Hive.initFlutter(appDocDir.path);
+
     Hive.registerAdapter(UserAdapter());
     Hive.registerAdapter(PlaylistAdapter());
     Hive.registerAdapter(TrackAdapter());
@@ -38,6 +42,11 @@ class HiveService extends GetxService {
     downloadedTracks = await Hive.openBox('downloadedTracks');
 
     for (int id in downloadedTracks.keys) {
+      var track = tracksBox.get(id);
+      if (track == null) {
+        downloadedTracks.delete(id);
+        continue;
+      }
       rxDownloadedTracks.add(tracksBox.get(id)!);
     }
 
@@ -51,6 +60,7 @@ class HiveService extends GetxService {
     await albumsBox.clear();
     await artistsBox.clear();
     await playlistTracks.clear();
+    await downloadedTracks.clear();
   }
 }
 

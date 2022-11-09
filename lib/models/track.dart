@@ -87,8 +87,8 @@ class Track {
   }
 
   createLocalPath() async {
-    Directory appDocDir = await getApplicationDocumentsDirectory();
-    final downloadsDir = appDocDir.path;
+    final downlader = Get.find<DownloaderService>();
+    final downloadsDir = downlader.tracksDir;
     return '$downloadsDir/track_$id.mp3';
   }
 

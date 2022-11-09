@@ -8,6 +8,7 @@ import 'package:test/models/track.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/services/hive.dart';
 import 'package:crypto/crypto.dart';
+import 'package:test/utils/path.dart';
 
 class DownloaderService extends GetxService {
   RxList<Track> tracksQueue = RxList<Track>();
@@ -16,16 +17,21 @@ class DownloaderService extends GetxService {
   late final HiveService hive;
   late Directory appDocDir;
   late String downloadsDir;
+  late String tracksDir;
 
   Map<String, bool> cachedPaths = {};
 
+
   Future<DownloaderService> init() async {
     hive = Get.find<HiveService>();
-    appDocDir = await getApplicationDocumentsDirectory();
+    appDocDir = await PathUtil.getApplicationDirectory();
+    await PathUtil.createDirectoryIfNotExists(appDocDir.path);
+
     downloadsDir = appDocDir.path + "/cache";
-    if (!await Directory(downloadsDir).exists()) {
-      await Directory(downloadsDir).create(recursive: true);
-    }
+    await PathUtil.createDirectoryIfNotExists(downloadsDir);
+
+    tracksDir = appDocDir.path + "/tracks";
+    await PathUtil.createDirectoryIfNotExists(tracksDir);
     return this;
   }
 
@@ -35,6 +41,7 @@ class DownloaderService extends GetxService {
     final localPath = "$downloadsDir/$hash";
     final localFile = File(localPath);
     if (cachedPaths[localPath] != null || await localFile.exists()) {
+      cachedPaths[localPath] = true;
       return localPath;
     }
 
@@ -48,6 +55,16 @@ class DownloaderService extends GetxService {
       print("CACHED: $localPath");
     }
     return localPath;
+  }
+
+  Future<void> clearImagesCache() async {
+    final dir = Directory(downloadsDir);
+    await dir.delete(recursive: true);
+  }
+
+  Future<void> clearTracksCache() async {
+    final dir = Directory(tracksDir);
+    await dir.delete(recursive: true);
   }
 
   process() async {
