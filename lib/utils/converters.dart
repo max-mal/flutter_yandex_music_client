@@ -35,11 +35,11 @@ class ConvertersUtils {
 
   static Track trackFromResponse(Map<String, dynamic> map) {
     return Track(
-      id: int.parse(map['id'].toString()),
+      id: map['id'].toString(),
       title: map['title'],
       duration: Duration(milliseconds: map['durationMs'] ?? 0),
       coverUri: map['coverUri'] ?? (map['cover']?['uri'] ?? ""),
-      hasLyrics: map['lyricsAvailable'],
+      hasLyrics: map['lyricsAvailable'] ?? false,
       artistIds: List<int>.from(map['artists'].map((e) => e['id']).toList()),
       albumIds: List<int>.from(map['albums'].map((e) => e['id']).toList()),
       artists: List<Artist>.from(

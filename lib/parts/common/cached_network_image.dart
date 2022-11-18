@@ -51,24 +51,26 @@ class _CachedNetworkImageState extends State<CachedNetworkImage> {
 
   @override
   void initState() {
-    downloader.cacheImage(widget.url, widget.cacheTag).then(
-      (value) {
+    if (widget.url.isNotEmpty) {
+      downloader.cacheImage(widget.url, widget.cacheTag).then(
+        (value) {
+          if (mounted) {
+            setState(() {
+              localPath = value;
+            });
+          }
+        },
+      ).catchError((_e) {
         if (mounted) {
           setState(() {
-            localPath = value;
+            error = true;
           });
         }
-      },
-    ).catchError((_e) {
-      if (mounted) {
-        setState(() {
-          error = true;
-        });
-      }
-      if (kDebugMode) {
-        print(_e);
-      }
-    });
+        if (kDebugMode) {
+          print(_e);
+        }
+      });
+    }
 
     super.initState();
   }

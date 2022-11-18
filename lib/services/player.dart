@@ -32,7 +32,7 @@ class PlayerService extends GetxService {
   }
 
   createTrackPlayer(Track track) async {
-    int trackId = track.id;
+    String trackId = track.id;
     try {
       playerInitialized = false;
       player.stop();

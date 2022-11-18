@@ -16,6 +16,7 @@ class LoginUseCase {
 
   loadAccessToken() {
     api.token = prefs.getAccessToken();
+    print("Token is ${api.token}");
   }
 
   bool isAuthorized() {

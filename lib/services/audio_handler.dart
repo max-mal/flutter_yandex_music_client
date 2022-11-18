@@ -116,7 +116,7 @@ class AppAudioHandler extends BaseAudioHandler
   Future<void> updateQueue(List<MediaItem> newQueue) {
     player.playlist(newQueue
         .map((e) => Track(
-              id: int.parse(e.id),
+              id: e.id,
               title: e.title,
               coverUri: e.artUri.toString(),
               artists: (e.artist ?? "")

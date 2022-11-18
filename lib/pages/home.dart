@@ -133,6 +133,20 @@ class HomePage extends StatelessWidget {
                                   controller.onDownloadedClick();
                                 },
                               ),
+                              ...controller.userPlaylists
+                                  .map(
+                                    (playlist) => HomeSecondaryListItem(
+                                      title: playlist.title,
+                                      icon: const Icon(
+                                        Icons.list,
+                                        color: Colors.black,
+                                      ),
+                                      onPressed: () {
+                                        controller.onPlaylistClick(playlist);
+                                      },
+                                    ),
+                                  )
+                                  .toList()
                             ],
                           ),
                         ),

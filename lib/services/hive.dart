@@ -12,10 +12,11 @@ import 'package:test/utils/path.dart';
 class HiveService extends GetxService {
   late Box<User> userBox;
   late Box<Playlist> generatedPlaylists;
+  late Box<Playlist> userPlaylists;
   late Box<Track> tracksBox;
   late Box<Album> albumsBox;
   late Box<Artist> artistsBox;
-  late Box<List<int>> playlistTracks;
+  late Box<List<String>> playlistTracks;
   late Box<bool> downloadedTracks;
   late Box<Playlist> playlistsBox;
   RxList<Track> rxDownloadedTracks = RxList<Track>();
@@ -40,8 +41,9 @@ class HiveService extends GetxService {
     artistsBox = await Hive.openBox<Artist>('artists');
     playlistTracks = await Hive.openBox('playlistTracks');
     downloadedTracks = await Hive.openBox('downloadedTracks');
+    userPlaylists = await Hive.openBox<Playlist>('userPlaylists');
 
-    for (int id in downloadedTracks.keys) {
+    for (String id in downloadedTracks.keys) {
       var track = tracksBox.get(id);
       if (track == null) {
         downloadedTracks.delete(id);
@@ -61,6 +63,7 @@ class HiveService extends GetxService {
     await artistsBox.clear();
     await playlistTracks.clear();
     await downloadedTracks.clear();
+    await userPlaylists.clear();
   }
 }
 

@@ -21,13 +21,13 @@ class TracksRepo {
 
       await hive.playlistTracks.put(
         "$userId/$playlistId",
-        tracks.map((e) => e.id).toList(),
+        tracks.map((e) => e.id.toString()).toList(),
       );
 
       return tracks;
     }
 
-    final List<int> trackIds =
+    final List<String> trackIds =
         hive.playlistTracks.get("$userId/$playlistId", defaultValue: [])!;
     return hive.tracksBox.values
         .where((element) => trackIds.contains(element.id))
@@ -57,13 +57,13 @@ class TracksRepo {
 
       await hive.playlistTracks.put(
         "liked",
-        tracks.map((e) => e.id).toList(),
+        tracks.map((e) => e.id.toString()).toList(),
       );
 
       return tracks;
     }
 
-    final List<int> trackIds = hive.playlistTracks.get(
+    final List<String> trackIds = hive.playlistTracks.get(
       "liked",
       defaultValue: [],
     )!;
@@ -86,13 +86,13 @@ class TracksRepo {
 
       await hive.playlistTracks.put(
         "disliked",
-        tracks.map((e) => e.id).toList(),
+        tracks.map((e) => e.id.toString()).toList(),
       );
 
       return tracks;
     }
 
-    final List<int> trackIds = hive.playlistTracks.get(
+    final List<String> trackIds = hive.playlistTracks.get(
       "disliked",
       defaultValue: [],
     )!;
@@ -108,7 +108,7 @@ class TracksRepo {
     final user = await UserRepository().get();
     await api.userLikeTracks(
       user.uid,
-      tracks.map((e) => e.id).toList(),
+      tracks.map((e) => e.id.toString()).toList(),
       value: value,
     );
     return await liked(online: true);
@@ -119,7 +119,7 @@ class TracksRepo {
     final user = await UserRepository().get();
     await api.userDislikeTracks(
       user.uid,
-      tracks.map((e) => e.id).toList(),
+      tracks.map((e) => e.id.toString()).toList(),
       value: value,
     );
     return await disliked(online: true);

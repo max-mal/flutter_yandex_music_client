@@ -98,6 +98,17 @@ class ApiService extends GetxService {
     return list;
   }
 
+  Future<List<Playlist>> userPlaylists(int userId) async {
+    final response = await _request('get', Uri.https(apiHost, '/users/$userId/playlists/list'));
+
+    List<Playlist> list = [];
+    for (final responseItem in response) {
+      list.add(ConvertersUtils.playlistFromResponse(responseItem));
+    }
+
+    return list;
+  }
+
   Future<List<FeedEvent>> feedEvents() async {
     final response = await _request('get', Uri.https(apiHost, '/feed'));
     List<dynamic> eventDays = response['days'];
@@ -127,7 +138,7 @@ class ApiService extends GetxService {
     return tracks;
   }
 
-  Future<List<TrackDownloadInfo>> trackDownloadInfo(int trackId) async {
+  Future<List<TrackDownloadInfo>> trackDownloadInfo(String trackId) async {
     final response = await _request(
         'get', Uri.https(apiHost, '/tracks/$trackId/download-info'));
 
@@ -164,37 +175,37 @@ class ApiService extends GetxService {
     return "https://$host/get-mp3/$sign/$ts$path";
   }
 
-  Future<List<int>> userLikedTrackIds(int userId) async {
+  Future<List<String>> userLikedTrackIds(int userId) async {
     final response = await _request(
       'get',
       Uri.https(apiHost, '/users/$userId/likes/tracks'),
     );
 
-    List<int> trackIds = [];
+    List<String> trackIds = [];
 
     for (Map<String, dynamic> item in response['library']['tracks']) {
-      trackIds.add(int.parse(item['id']));
+      trackIds.add(item['id']);
     }
 
     return trackIds;
   }
 
-  Future<List<int>> userDislikedTrackIds(int userId) async {
+  Future<List<String>> userDislikedTrackIds(int userId) async {
     final response = await _request(
       'get',
       Uri.https(apiHost, '/users/$userId/dislikes/tracks'),
     );
 
-    List<int> trackIds = [];
+    List<String> trackIds = [];
 
     for (Map<String, dynamic> item in response['library']['tracks']) {
-      trackIds.add(int.parse(item['id']));
+      trackIds.add(item['id']);
     }
 
     return trackIds;
   }
 
-  userLikeTracks(int userId, List<int> trackIds, {bool value = true}) async {
+  userLikeTracks(int userId, List<String> trackIds, {bool value = true}) async {
     await _request(
       'post',
       Uri.https(apiHost,
@@ -205,7 +216,7 @@ class ApiService extends GetxService {
     );
   }
 
-  userDislikeTracks(int userId, List<int> trackIds, {bool value = true}) async {
+  userDislikeTracks(int userId, List<String> trackIds, {bool value = true}) async {
     await _request(
       'post',
       Uri.https(apiHost,
@@ -216,7 +227,7 @@ class ApiService extends GetxService {
     );
   }
 
-  Future<List<Track>> tracks(List<int> trackIds) async {
+  Future<List<Track>> tracks(List<String> trackIds) async {
     final response = await _request(
       'post',
       Uri.https(apiHost, '/tracks'),

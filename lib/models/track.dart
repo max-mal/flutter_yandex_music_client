@@ -16,7 +16,7 @@ part 'track.g.dart';
 @HiveType(typeId: 3)
 class Track {
   @HiveField(0)
-  int id;
+  String id;
   @HiveField(1)
   String title;
   @HiveField(2)
@@ -40,7 +40,7 @@ class Track {
   DateTime? directLinkTime;
 
   Track({
-    this.id = 0,
+    this.id = "0",
     this.title = "",
     this.duration = const Duration(),
     this.coverUri = "",
@@ -121,6 +121,9 @@ class Track {
   String get albumsString => albums.map((e) => e.title).join(', ');
 
   String getCoverUri({int width = 200, int height = 200}) {
+    if (coverUri.isEmpty || coverUri == "null") {
+      return "";
+    }
     return "https://${coverUri.replaceAll('%%', "${width}x$height")}";
   }
 

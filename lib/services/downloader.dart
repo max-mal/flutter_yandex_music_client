@@ -72,11 +72,14 @@ class DownloaderService extends GetxService {
     while (tracksQueue.isNotEmpty) {
       Track track = tracksQueue.first;
       try {
-        final url = await track.getDownloadUrl();
-        final response = await http.get(Uri.parse(url));
         final localPath = await track.createLocalPath();
         File file = File(localPath);
-        await file.writeAsBytes(response.bodyBytes);
+        if (!await file.exists()) {
+          final url = await track.getDownloadUrl();
+          final response = await http.get(Uri.parse(url));
+
+          await file.writeAsBytes(response.bodyBytes);
+        }
         await hive.downloadedTracks.put(track.id, true);
         hive.rxDownloadedTracks.add(track);
         tracksQueue.removeAt(0);

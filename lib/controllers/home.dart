@@ -16,6 +16,7 @@ import 'package:test/repos/generated_playlists.dart';
 import 'package:test/repos/search.dart';
 import 'package:test/repos/tracks.dart';
 import 'package:test/repos/user.dart';
+import 'package:test/repos/user_playlists.dart.dart';
 import 'package:test/services/api.dart';
 import 'package:test/services/audio_control.dart';
 import 'package:test/services/downloader.dart';
@@ -33,10 +34,12 @@ class HomeController extends GetxController {
   final searchRepo = SearchRepo();
   final eventsRepo = EventsRepo();
   final generatedPlaylistsRepo = GeneratedPlaylistsRepo();
+  final userPlaylistsRepo = UserPlaylistsRepo();
   final api = Get.find<ApiService>();
 
   Rx<User> user = Rx<User>(User());
   RxList<Playlist> generatedPlaylists = RxList<Playlist>([]);
+  RxList<Playlist> userPlaylists = RxList<Playlist>([]);
   RxList<Track> likedTracks = RxList<Track>([]);
   RxList<Track> dislikedTracks = RxList<Track>([]);
   RxList<FeedEvent> feedEvents = RxList<FeedEvent>([]);
@@ -64,6 +67,7 @@ class HomeController extends GetxController {
 
   loadHomePage({bool notification = false}) {
     _loadPlaylists();
+    _loadUserPlaylists();
     _loadLikedTracks();
     _loadDislikedTracks();
     _loadFeedEvents();
@@ -75,6 +79,10 @@ class HomeController extends GetxController {
 
   _loadPlaylists() async {
     generatedPlaylists(await generatedPlaylistsRepo.get(online: online.value));
+  }
+
+  _loadUserPlaylists() async {
+    userPlaylists(await userPlaylistsRepo.get(online: online.value));
   }
 
   _loadLikedTracks() async {
