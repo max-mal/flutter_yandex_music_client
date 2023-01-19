@@ -12,7 +12,7 @@ class ServicesUtil {
     Get.put(await ApiService().init(), permanent: true);
     Get.put(await OAuthService().init(), permanent: true);
     Get.put(await HiveService().init(), permanent: true);
-    Get.put(await AudioControlService().init(), permanent: true);
     Get.put(await DownloaderService().init(), permanent: true);
+    Get.put(await AudioControlService().init(), permanent: true);
   }
 }

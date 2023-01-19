@@ -43,9 +43,7 @@ class PlayerBar extends StatelessWidget {
                         )
                       : InkWell(
                           onTap: () {
-                            if (audioControl.currentTrack.value != null) {
-                              PlayingPage.open();
-                            }
+                            PlayingPage.open();
                           },
                           child: CachedNetworkImage(
                             key: ValueKey(

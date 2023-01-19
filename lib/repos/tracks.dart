@@ -36,8 +36,8 @@ class TracksRepo {
   }
 
   Future<List<Track>> downloaded() async {
-    final List<int> trackIds =
-        hive.downloadedTracks.keys.map((e) => int.parse(e.toString())).toList();
+    final List<String> trackIds =
+        hive.downloadedTracks.keys.map((e) => e.toString()).toList();
 
     return hive.tracksBox.values
         .where((element) => trackIds.contains(element.id))

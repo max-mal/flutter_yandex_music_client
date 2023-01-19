@@ -58,7 +58,7 @@ class AudioControlService extends GetxService {
         return;
       }
       currentTrack(
-        hive.tracksBox.get(int.parse(value.id)),
+        hive.tracksBox.get(value.id),
       );
 
       trackDuration(value.duration);

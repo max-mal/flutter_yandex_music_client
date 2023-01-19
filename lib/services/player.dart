@@ -21,7 +21,7 @@ class PlayerService extends GetxService {
 
   late PlayerController player;
   bool playerInitialized = false;
-  final downloader = DownloaderService();
+  late final downloader = Get.find<DownloaderService>();
 
   bool online = true;
 
