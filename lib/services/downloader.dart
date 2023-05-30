@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:test/models/track.dart';
 import 'package:http/http.dart' as http;
 import 'package:test/services/hive.dart';

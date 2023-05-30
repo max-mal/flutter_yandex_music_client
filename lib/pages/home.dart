@@ -152,14 +152,6 @@ class HomePage extends StatelessWidget {
                         ),
                       ),
                     ),
-                    // SliverList(
-                    //   delegate: SliverChildBuilderDelegate(
-                    //     (context, index) => HomeFeedItem(
-                    //       event: controller.feedEvents[index],
-                    //     ),
-                    //     childCount: controller.feedEvents.length,
-                    //   ),
-                    // ),
                     ..._feedSliverList(),
                   ],
                 ),
@@ -178,99 +170,5 @@ class HomePage extends StatelessWidget {
       slivers.addAll(HomeFeedItem.asSliverList(e));
     }
     return slivers;
-  }
-
-  @override
-  Widget _build(BuildContext context) {
-    return Scaffold(
-      body: SafeArea(
-        bottom: false,
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Obx(
-                      () => ScrollConfiguration(
-                        behavior: ScrollConfiguration.of(context).copyWith(
-                          dragDevices: {
-                            PointerDeviceKind.mouse,
-                            PointerDeviceKind.touch,
-                          },
-                        ),
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: controller.generatedPlaylists.reversed
-                                .map(
-                                  (playlist) => HomeGeneratedPlaylist(
-                                    playlist: playlist,
-                                    onTap: (_playlist) =>
-                                        controller.onPlaylistClick(playlist),
-                                  ),
-                                )
-                                .toList(),
-                          ),
-                        ),
-                      ),
-                    ),
-                    ScrollConfiguration(
-                      behavior: ScrollConfiguration.of(context).copyWith(
-                        dragDevices: {
-                          PointerDeviceKind.mouse,
-                          PointerDeviceKind.touch,
-                        },
-                      ),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        child: Row(
-                          children: [
-                            HomeSecondaryListItem(
-                              title: 'Мне нравится',
-                              icon:
-                                  const Icon(Icons.favorite, color: Colors.red),
-                              onPressed: () {
-                                controller.onLikedClick();
-                              },
-                            ),
-                            HomeSecondaryListItem(
-                              title: 'Загруженное',
-                              icon: const Icon(Icons.download_done,
-                                  color: Colors.green),
-                              onPressed: () {
-                                controller.onDownloadedClick();
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    Obx(
-                      () => Column(
-                        mainAxisSize: MainAxisSize.min,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: controller.feedEvents
-                            // .map(
-                            //   (e) => Text(e.toString()),
-                            // )
-                            .map(
-                              (e) => HomeFeedItem(
-                                event: e,
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            PlayerBar(),
-          ],
-        ),
-      ),
-    );
   }
 }

@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:test/services/downloader.dart';
-import 'package:test/utils/services.dart';
 
 class CachedNetworkImage extends StatefulWidget {
   final String url;

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 // ignore: unnecessary_import
 import 'package:hive/hive.dart';
@@ -23,7 +24,9 @@ class HiveService extends GetxService {
 
   Future<HiveService> init() async {
     final appDocDir = await PathUtil.getApplicationDirectory();
-    print('Will init in ${appDocDir.path}');
+    if (kDebugMode) {
+      print('Will init in ${appDocDir.path}');
+    }
     await Hive.initFlutter(appDocDir.path);
 
     Hive.registerAdapter(UserAdapter());

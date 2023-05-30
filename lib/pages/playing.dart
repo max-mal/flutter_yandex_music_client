@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:test/controllers/home.dart';
-import 'package:test/modals/track_options.dart';
-import 'package:test/parts/common/cached_network_image.dart';
 import 'package:test/parts/player/player_view.dart';
 import 'package:test/parts/track_list/track.dart';
 import 'package:test/services/audio_control.dart';
@@ -48,7 +46,7 @@ class _PlayingPageState extends State<PlayingPage> {
                       .downloadTracks([audioControl.tracksList[index]]),
                   onPlay: () => homeController.playTrack(
                     audioControl.tracksList[index],
-                    audioControl.tracksList,
+                    audioControl.tracksList.toList(),
                   ),
                 ),
                 childCount: audioControl.tracksList.length,

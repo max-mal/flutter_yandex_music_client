@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:test/models/user.dart';
 import 'package:test/repos/user.dart';
@@ -16,7 +17,9 @@ class LoginUseCase {
 
   loadAccessToken() {
     api.token = prefs.getAccessToken();
-    print("Token is ${api.token}");
+    if (kDebugMode) {
+      print("Token is ${api.token}");
+    }
   }
 
   bool isAuthorized() {

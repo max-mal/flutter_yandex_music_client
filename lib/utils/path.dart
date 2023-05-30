@@ -6,7 +6,7 @@ import 'package:path_provider/path_provider.dart';
 class PathUtil {
 	static Future<Directory> getApplicationDirectory() async {
 		Directory appDocDir = await getApplicationDocumentsDirectory();
-	    if (GetPlatform.isLinux) {
+	    if (GetPlatform.isLinux || GetPlatform.isWindows) {
 	      appDocDir = Directory(appDocDir.path + '/.flutter_yandex_music');
 	    }
 

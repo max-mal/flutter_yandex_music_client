@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:get/get.dart';
 import 'package:hive/hive.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:test/controllers/home.dart';
 import 'package:test/models/album.dart';
 import 'package:test/models/artist.dart';

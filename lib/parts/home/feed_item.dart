@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -52,7 +53,9 @@ class HomeFeedItemTitle extends StatelessWidget {
   }
 
   _onSpanTap(Map<String, dynamic> e) {
-    print(e);
+    if (kDebugMode) {
+      print(e);
+    }
     if (e['type'] == 'artist') {
       ArtistPage.open(e['id']);
     }

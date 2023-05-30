@@ -3,7 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  dart_vlc
+  audioplayers_windows
   smart_auth
   url_launcher_windows
 )
