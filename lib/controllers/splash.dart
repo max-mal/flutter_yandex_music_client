@@ -7,7 +7,11 @@ class SplashController extends GetxController {
   RxBool canRequestCode = false.obs;
   RxBool isCodeRequested = false.obs;
   TextEditingController pinputController = TextEditingController();
+  TextEditingController tokenController = TextEditingController();
   FocusNode pinputFocusNode = FocusNode();
+
+  RxBool canEnterTokenManually = false.obs;
+  RxBool showTokenInput = false.obs;
 
   final LoginUseCase loginUseCase = LoginUseCase();
 
@@ -26,9 +30,11 @@ class SplashController extends GetxController {
     }
 
     canRequestCode(true);
+    canEnterTokenManually(true);
   }
 
   onRequestCode() {
+    showTokenInput(false);
     loginUseCase.requestCode();
     isCodeRequested(true);
     pinputFocusNode.requestFocus();
@@ -41,6 +47,24 @@ class SplashController extends GetxController {
     } catch (e) {
       Get.snackbar('Error', 'Failed to log in. Please try again');
       pinputController.text = "";
+      rethrow;
+    }
+    Get.offAll(() => HomePage());
+  }
+
+  onEnterTokenManually() {
+    canEnterTokenManually(false);
+    showTokenInput(true);
+  }
+
+  onTokenSubmitted() async {
+    showTokenInput(false);
+    canEnterTokenManually(true);
+    Get.closeAllSnackbars();
+    try {
+      await loginUseCase.authorizeByToken(tokenController.text);
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to log in. Please try again');
       rethrow;
     }
     Get.offAll(() => HomePage());

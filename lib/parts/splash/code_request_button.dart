@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 
 class SplashCodeRequestButton extends StatelessWidget {
   final Function onPressed;
+  final String text;
   const SplashCodeRequestButton({
     Key? key,
     required this.onPressed,
+    this.text = 'Request code',
   }) : super(key: key);
 
   @override
@@ -16,7 +18,7 @@ class SplashCodeRequestButton extends StatelessWidget {
           onPressed();
         },
         icon: const Icon(Icons.login),
-        label: const Text('Request code'),
+        label: Text(text),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:test/models/album.dart';
 import 'package:test/models/artist.dart';
@@ -189,5 +190,10 @@ class HomeController extends GetxController {
 
   Future<SearchResult> search(String text) async {
     return await searchRepo.search(text);
+  }
+
+  copyToken() {
+    Clipboard.setData(ClipboardData(text: api.token ?? ''));
+    Get.snackbar('Скопировано!', 'Токен скопирован в буффер обмена');
   }
 }

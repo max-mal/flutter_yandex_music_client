@@ -37,6 +37,12 @@ class LoginUseCase {
     return await UserRepository().get(online: true);
   }
 
+  Future<User> authorizeByToken(String token) async {
+    api.setToken(token);
+    prefs.setAccessToken(token);
+    return await UserRepository().get(online: true);
+  }
+
   logout() async {
     await prefs.deleteAccessToken();
     api.cleanToken();

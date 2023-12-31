@@ -22,12 +22,17 @@ class HomePage extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: Obx(
-              () => Text(
-                'Привет, ${controller.user.value.firstName}',
-                style: const TextStyle(
-                  fontSize: 16,
+              () => GestureDetector(
+                onTap: () {
+                  controller.copyToken();
+                },
+                child: Text(
+                  'Привет, ${controller.user.value.firstName}',
+                  style: const TextStyle(
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.left,
                 ),
-                textAlign: TextAlign.left,
               ),
             ),
           ),

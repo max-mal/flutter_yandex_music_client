@@ -50,6 +50,30 @@ class _SplashPageState extends State<SplashPage> {
                 ? SplashCodeRequestButton(onPressed: controller.onRequestCode)
                 : const SizedBox(),
           ),
+
+          Obx(
+            () => controller.canEnterTokenManually.value
+                ? SplashCodeRequestButton(onPressed: controller.onEnterTokenManually, text: 'Enter token',)
+                : const SizedBox(),
+          ),
+          Obx(
+            () => controller.showTokenInput.value
+                ? Center(
+                  child: SizedBox(
+                    width: 150,
+                    child: TextField(
+                      controller: controller.tokenController,
+                      decoration: const InputDecoration(
+                          label: Text('Token'),
+                      ),
+                      onSubmitted: (_) {
+                        controller.onTokenSubmitted();
+                      },
+                    ),
+                  ),
+                )
+                : const SizedBox(),
+          ),
         ],
       ),
     );
