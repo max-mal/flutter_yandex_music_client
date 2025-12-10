@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:pinput/pinput.dart';
 import 'package:test/controllers/splash.dart';
 import 'package:test/parts/splash/code_request_button.dart';
 
@@ -31,17 +30,29 @@ class _SplashPageState extends State<SplashPage> {
           ),
           Obx(
             () => controller.isCodeRequested.value
-                ? Padding(
-                    padding: const EdgeInsets.all(32.0),
-                    child: Pinput(
-                      onCompleted: (code) {
-                        controller.onCodeEntered(code);
-                      },
-                      length: 7,
-                      showCursor: true,
-                      controller: controller.pinputController,
-                      focusNode: controller.pinputFocusNode,
-                    ),
+                ? Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(
+                        width: 300,
+                        child: TextField(
+                          autocorrect: false,
+                          controller: controller.codeController,
+                          decoration: const InputDecoration(
+                            label: Text("Enter code")
+                          ),
+                          onSubmitted: (value) {
+                            controller.onCodeEntered(value);
+                          },
+                        ),
+                      ),
+                      TextButton(
+                        onPressed: () {
+                          controller.onCodeEntered(controller.codeController.text);
+                        },
+                        child: const Text('OK'),
+                      )
+                    ],
                   )
                 : const SizedBox(),
           ),
@@ -50,28 +61,30 @@ class _SplashPageState extends State<SplashPage> {
                 ? SplashCodeRequestButton(onPressed: controller.onRequestCode)
                 : const SizedBox(),
           ),
-
           Obx(
             () => controller.canEnterTokenManually.value
-                ? SplashCodeRequestButton(onPressed: controller.onEnterTokenManually, text: 'Enter token',)
+                ? SplashCodeRequestButton(
+                    onPressed: controller.onEnterTokenManually,
+                    text: 'Enter token',
+                  )
                 : const SizedBox(),
           ),
           Obx(
             () => controller.showTokenInput.value
                 ? Center(
-                  child: SizedBox(
-                    width: 150,
-                    child: TextField(
-                      controller: controller.tokenController,
-                      decoration: const InputDecoration(
+                    child: SizedBox(
+                      width: 150,
+                      child: TextField(
+                        controller: controller.tokenController,
+                        decoration: const InputDecoration(
                           label: Text('Token'),
+                        ),
+                        onSubmitted: (_) {
+                          controller.onTokenSubmitted();
+                        },
                       ),
-                      onSubmitted: (_) {
-                        controller.onTokenSubmitted();
-                      },
                     ),
-                  ),
-                )
+                  )
                 : const SizedBox(),
           ),
         ],

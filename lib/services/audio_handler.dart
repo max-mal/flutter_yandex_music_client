@@ -15,18 +15,18 @@ class AppAudioHandler extends BaseAudioHandler
   PlaybackState _makePlaybackState() {
     return PlaybackState(
       controls: [
-        MediaControl.skipToPrevious,
-        player.isPlaying ? MediaControl.pause : MediaControl.play,
-        MediaControl.stop,
+        MediaControl.skipToPrevious,        
+        MediaControl.pause,
         MediaControl.skipToNext,
       ],
       systemActions: const {
+        MediaAction.playPause,
         MediaAction.seek,
         MediaAction.seekForward,
         MediaAction.seekBackward,
       },
       // Which controls to show in Android's compact view.
-      androidCompactActionIndices: const [0, 1, 3],
+      androidCompactActionIndices: const [0, 1, 2],
       // Whether audio is ready, buffering, ...
       processingState: AudioProcessingState.ready,
       // Whether audio is playing
@@ -34,7 +34,7 @@ class AppAudioHandler extends BaseAudioHandler
       updatePosition: player.position.value,
       // The current buffered psition as of this update
       bufferedPosition:
-          player.playerInitialized ? player.player.duration : Duration.zero,
+          player.playerInitialized ? (player.player.duration ?? Duration.zero) : Duration.zero,
       speed: 1.0,
       // The current queue position
       queueIndex: player.playlist.indexOf(player.currentTrack.value),
@@ -43,6 +43,7 @@ class AppAudioHandler extends BaseAudioHandler
           : AudioServiceRepeatMode.none,
     );
   }
+  
 
   _makeMediaItem() {
     if (player.currentTrack.value == null) {
@@ -65,6 +66,11 @@ class AppAudioHandler extends BaseAudioHandler
       mediaItem.add(_makeMediaItem());
     });
 
+    player.playingState.listen((_) {
+      playbackState.add(_makePlaybackState());
+      mediaItem.add(_makeMediaItem());
+    });
+
     player.currentTrack.listen((_) {
       playbackState.add(_makePlaybackState());
       mediaItem.add(_makeMediaItem());
@@ -74,16 +80,22 @@ class AppAudioHandler extends BaseAudioHandler
       playbackState.add(_makePlaybackState());
       mediaItem.add(_makeMediaItem());
     });
-  }
+  }  
 
   @override
   Future<void> play() async {
+    print("passing play");
     player.play();
   }
 
   @override
   Future<void> pause() async {
-    player.pause();
+    print("passing pause");
+    if (player.isPlaying) {
+      player.pause();
+    } else {
+      player.play();
+    }    
   }
 
   @override
@@ -93,7 +105,7 @@ class AppAudioHandler extends BaseAudioHandler
 
   @override
   Future<void> seek(Duration position) async {
-    player.player.position = position;
+    player.player.seek(position);
   }
 
   @override
@@ -136,6 +148,11 @@ class AppAudioHandler extends BaseAudioHandler
 
     if (name == "setOffline") {
       player.online = false;
+    }
+
+    if (name == "custom_play") {
+      print("on custom play");
+      player.play();
     }
   }
 

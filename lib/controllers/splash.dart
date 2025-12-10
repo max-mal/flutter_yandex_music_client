@@ -6,7 +6,7 @@ import 'package:test/use_cases/login.dart';
 class SplashController extends GetxController {
   RxBool canRequestCode = false.obs;
   RxBool isCodeRequested = false.obs;
-  TextEditingController pinputController = TextEditingController();
+  TextEditingController codeController = TextEditingController();
   TextEditingController tokenController = TextEditingController();
   FocusNode pinputFocusNode = FocusNode();
 
@@ -46,7 +46,7 @@ class SplashController extends GetxController {
       await loginUseCase.authorizeByCode(code);
     } catch (e) {
       Get.snackbar('Error', 'Failed to log in. Please try again');
-      pinputController.text = "";
+      codeController.text = "";
       rethrow;
     }
     Get.offAll(() => HomePage());

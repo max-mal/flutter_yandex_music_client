@@ -3,8 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
-  audioplayers_windows
-  smart_auth
+  share_plus
   url_launcher_windows
 )
 

@@ -1,10 +1,9 @@
 import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:kplayer/kplayer.dart';
+import 'package:just_audio_media_kit/just_audio_media_kit.dart';
 import 'package:test/models/track.dart';
 import 'package:test/services/downloader.dart';
+import 'package:just_audio/just_audio.dart';
 
 class PlayerService extends GetxService {
   Future<PlayerService> init() async {
@@ -13,13 +12,15 @@ class PlayerService extends GetxService {
 
   RxList<Track> playlist = RxList<Track>([]);
   Rxn<Track> currentTrack = Rxn<Track>();
-  Rx<PlayerStatus> status = PlayerStatus.stopped.obs;
+  Rx<ProcessingState> status = ProcessingState.idle.obs;
+  RxBool playingState = false.obs;
   Rx<Duration> position = Duration.zero.obs;
   Rx<Duration> trackDuration = Duration.zero.obs;
 
   RxBool loop = true.obs;
+  
+  late AudioPlayer player;
 
-  late PlayerController player;
   bool playerInitialized = false;
   late final downloader = Get.find<DownloaderService>();
 
@@ -31,57 +32,51 @@ class PlayerService extends GetxService {
     runPlayer();
   }
 
-  createTrackPlayer(Track track) async {
-    String trackId = track.id;
-    try {
-      playerInitialized = false;
-      player.stop();
-      player.dispose();
-    } catch (e) {
-      if (kDebugMode) {
-        print(e);
-      }
-    }
+  initializePlayer() async {
+    JustAudioMediaKit.ensureInitialized();
+    player = AudioPlayer();
+    player.durationStream.listen((duration) {
+      trackDuration(duration ?? Duration.zero);
+    });
 
+    player.positionStream.listen((pos) {
+      position(pos);
+    });
+
+    player.playerStateStream.listen((state) {
+      if (state.processingState == ProcessingState.completed && status.value != state.processingState) {
+        nextTrack();
+      }
+      status(state.processingState);
+    });
+
+    player.playingStream.listen((event) {
+      playingState(event);
+    });
+
+    playerInitialized = true;
+  }
+
+  createTrackPlayer(Track track) async {
     final localPath = await track.createLocalPath();
     bool isDownloaded = false;
-    late PlayerController cPlayer;
+    
+    if (!playerInitialized) {
+      await initializePlayer();
+    }
+
     if (await File(localPath).exists()) {
-      isDownloaded = true;
-      cPlayer = Player.file(localPath, autoPlay: false);
+      isDownloaded = true;      
+      await player.setFilePath(localPath);
     } else {
       if (!online) {
         nextTrack();
         return;
       }
       final url = await track.getDownloadUrl();
-      cPlayer = Player.network(url, autoPlay: false);
+      await player.setUrl(url);
     }
-
-    cPlayer.streams.status.listen((event) {
-      if (event == PlayerStatus.ended && status.value != event) {
-        nextTrack();
-      }
-      status(event);
-      trackDuration(player.duration);
-    });
-
-    cPlayer.streams.position.listen((event) {
-      position(event);
-      trackDuration(player.duration);
-    });
-
-    cPlayer.streams.duration.listen((event) {
-      trackDuration(event);
-    });
-
-    if (currentTrack.value?.id != trackId) {
-      cPlayer.stop();
-      cPlayer.dispose();
-      return;
-    }
-
-    player = cPlayer;
+       
     playerInitialized = true;
     player.play();
 
@@ -118,8 +113,8 @@ class PlayerService extends GetxService {
   }
 
   play() {
-    if (status.value == PlayerStatus.stopped ||
-        status.value == PlayerStatus.ended) {
+    if (status.value == ProcessingState.idle ||
+        status.value == ProcessingState.completed) {
       runPlayer();
     } else {
       if (playerInitialized) player.play();
@@ -148,9 +143,9 @@ class PlayerService extends GetxService {
     if (!playerInitialized) {
       return;
     }
-    player.position = duration;
+    player.seek(duration);
   }
 
-  bool get isPlaying => status.value == PlayerStatus.playing;
-  Duration get duration => playerInitialized ? player.duration : Duration.zero;
+  bool get isPlaying => playerInitialized? player.playing : false;
+  Duration get duration => playerInitialized ? (player.duration ?? Duration.zero) : Duration.zero;
 }

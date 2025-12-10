@@ -23,6 +23,10 @@ import 'package:test/services/audio_control.dart';
 import 'package:test/services/downloader.dart';
 import 'package:test/services/hive.dart';
 import 'package:test/use_cases/login.dart';
+import 'package:test/utils/open_file.dart';
+
+import 'package:share_plus/share_plus.dart';
+import 'package:cross_file/cross_file.dart';
 
 class HomeController extends GetxController {
   final hive = Get.find<HiveService>();
@@ -145,6 +149,24 @@ class HomeController extends GetxController {
 
   downloadTracks(List<Track> tracks) {
     downloader.downloadTracks(tracks);
+  }
+
+  shareTrack(Track track) async {
+    if (!track.isDownloaded()) {
+      downloadTracks([track]);
+      Get.snackbar('Загрузка', 'Подождите, пока трек загрузится');
+      return;
+    }
+
+    final path = await track.createLocalPath();
+    print(path);
+    if (GetPlatform.isLinux) {
+      showFile(path);
+    } else {
+      await Share.shareXFiles([
+        XFile(path)
+      ], text: track.title);
+    }
   }
 
   setOnline(bool value) {

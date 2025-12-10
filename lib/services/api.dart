@@ -34,6 +34,7 @@ class ApiService extends GetxService {
     Map<String, String> headers = {};
     if (token != null) {
       headers['Authorization'] = 'OAuth $token';
+      headers['Accept'] = 'application/json';
     }
     if (json) {
       headers['Content-Type'] = 'application/json';
@@ -53,7 +54,7 @@ class ApiService extends GetxService {
     }
     switch (httpMethod) {
       case 'get':
-        response = await _getClient().get(uri, headers: _getHeaders());
+        response = await _getClient().get(uri, headers: _getHeaders());        
         break;
       case 'post':
         response = await _getClient().post(
@@ -69,7 +70,7 @@ class ApiService extends GetxService {
     if (kDebugMode) {
       print("========");
     }
-    return jsonDecode(response.body)['result'];
+    return jsonDecode(utf8.decode(response.bodyBytes))['result'];
   }
 
   setToken(String token) {

@@ -7,6 +7,7 @@ import 'package:test/models/track_download_info.dart';
 import 'package:test/services/api.dart';
 import 'package:test/services/downloader.dart';
 import 'package:test/services/hive.dart';
+import 'package:slugify/slugify.dart';
 
 part 'track.g.dart';
 
@@ -86,7 +87,8 @@ class Track {
   createLocalPath() async {
     final downlader = Get.find<DownloaderService>();
     final downloadsDir = downlader.tracksDir;
-    return '$downloadsDir/track_$id.mp3';
+    final slug = slugify("${artists.first.name}_$title");
+    return '$downloadsDir/track_${id}_$slug.mp3';
   }
 
   bool isDownloaded() {

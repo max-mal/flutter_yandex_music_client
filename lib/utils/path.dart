@@ -5,14 +5,18 @@ import 'package:path_provider/path_provider.dart';
 
 class PathUtil {
 	static Future<Directory> getApplicationDirectory() async {
-		Directory appDocDir = await getApplicationDocumentsDirectory();
-	    if (GetPlatform.isLinux || GetPlatform.isWindows) {
-	      appDocDir = Directory(appDocDir.path + '/.flutter_yandex_music');
-	    }
+    Directory appDocDir;
+    
+    if (GetPlatform.isAndroid) {
+      appDocDir = await getExternalStorageDirectory() ?? await getApplicationDocumentsDirectory();
+    } else {
+      appDocDir = await getApplicationDocumentsDirectory();
+    }
+		    
+    appDocDir = Directory(appDocDir.path + '/flutter_yandex_music');
+    await PathUtil.createDirectoryIfNotExists(appDocDir.path);
 
-	    await PathUtil.createDirectoryIfNotExists(appDocDir.path);
-
-	    return appDocDir;
+    return appDocDir;
 	}
 
 	static Future<void> createDirectoryIfNotExists(String path) async {

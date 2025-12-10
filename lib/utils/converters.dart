@@ -6,14 +6,14 @@ import 'package:test/models/track.dart';
 import 'package:test/models/user.dart';
 
 class ConvertersUtils {
-  static User userFromResponse(Map<String, dynamic> map) {
+  static User userFromResponse(Map<String, dynamic> map) {    
     return User(
       uid: map['uid'],
-      firstName: map['firstName'],
-      secondName: map['secondName'],
-      fullName: map['fullName'],
-      login: map['login'],
-      registeredAt: DateTime.tryParse(map['registeredAt']),
+      firstName: map['firstName'] ?? '',
+      secondName: map['secondName'] ?? '',
+      fullName: map['fullName'] ?? '',
+      login: map['login'] ?? 'None',
+      registeredAt: map.containsKey('registeredAt')? DateTime.tryParse(map['registeredAt']) : null,
     );
   }
 

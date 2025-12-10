@@ -132,6 +132,18 @@ class TrackOptionsModal extends StatelessWidget {
                 title: Text('Перейти к исполнителю'),
               ),
             ),
+            InkWell(
+              onTap: () {
+                Get.back();
+                homeController.shareTrack(track);
+              },
+              child: const ListTile(
+                leading: Icon(
+                  Icons.share,
+                ),
+                title: Text('Поделиться'),
+              ),
+            ),
           ],
         ),
       ),

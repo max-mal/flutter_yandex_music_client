@@ -37,6 +37,9 @@ class AudioControlService extends GetxService {
       playerService.status.listen((_status) {
         isPlaying(playerService.isPlaying);
       });
+      playerService.playingState.listen((playing) {
+        isPlaying(playing);
+      });
       playerService.loop.listen((_loop) {
         loop(_loop);
       });

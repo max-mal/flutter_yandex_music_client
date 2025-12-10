@@ -19,7 +19,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  final controller = Get.put(SearchController());
+  final controller = Get.put(AppSearchController());
   final homeController = Get.find<HomeController>();
   @override
   Widget build(BuildContext context) {
